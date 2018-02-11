@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dlepera
+ * Date: 11/02/16
+ * Time: 17:53
+ */
+
+if (!isset($params)) {
+    $params = $this->obterParams();
+} // Fim if
+?>
+
+[DLX-MENSAGENS-USUARIO]
+<?php if (array_key_exists('html:mensagens-usuario', $params)) {
+    foreach ($params['html:mensagens-usuario'] as $msg) {
+        printf('<p class="mostrar-msg %s">%s</p>', $msg['tipo'], $msg['texto']);
+    } // Fim foreach
+} // Fim if ?>
+[/DLX-MENSAGENS-USUARIO]

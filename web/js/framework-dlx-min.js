@@ -1,0 +1,5 @@
+/** @preserve
+ * The MIT License (MIT) https://github.com/dlepera88-php/framework-dlx/blob/master/LICENSE
+ * Copyright (c) 2017 Diego Lepera http://diegolepera.xyz/
+ */
+function temEventoNamespace(e,t){var n=0,i;if(t.indexOf(".")>-1){var a=t.split(".");t=a[0],i=a[1]}if(void 0===e.length){if(void 0!==$._data(e,"events")){var r=t.length>0?$._data(e,"events")[t]:$._data(e,"events");$.each(r,function(){if(typeof this===Array)$.each(this,function(){if(this.namespace===i)return n++});else if(this.namespace===i)return n++})}}else for(var o=e.length,s=0;s<o;s++)temEventoNamespace(e[s],i)&&n++;return n>0}function adicionarEvento(e,t,n){e.each(function(){(t.indexOf(".")<0||!temEventoNamespace(this,t))&&$(this).on(t,n)})}function obj2QueryString(e){return Object.keys(e).map(function(t){return t+"="+e[t]}).join("&")}

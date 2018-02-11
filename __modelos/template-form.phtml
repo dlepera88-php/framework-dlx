@@ -1,0 +1,60 @@
+<?php
+/**
+ * aplicativo
+ * @version: versão
+ * @author: Diego Lepera
+ *
+ * Created by Diego Lepera on 2017-07-28. Please report any bug at
+ * https://github.com/dlepera88-php/framework-dlx/issues
+ *
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Diego Lepera http://diegolepera.xyz/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+use DLX\Ajudantes\HTMLForm;
+use DLX\Ajudantes\Strings;
+
+if(!isset($params)) {
+    $params = $this->obterParams();
+} // Fim if
+
+$modelo = $params['modelo'];
+?>
+
+[DLX-CONTEUDO]
+<form id="form-<?php echo $params['html:form-id']; ?>" method="post" action="<?php echo $params['html:form-acao']; ?>">
+    <?php if (!$params['conf:inserindo-registro?']) :
+        foreach ($params['lista:pk-tabela'] as $campo) :
+            $prop_nome = 'get' . Strings::conveter2PSR($campo); ?>
+            <input type="hidden" name="<?php echo $campo; ?>" value="<?php echo $modelo->{$prop_nome}(); ?>"/>
+        <?php endforeach;
+    endif; ?>
+
+    <p class="form-paragr">
+        <?php echo HTMLForm::chkSimNao('publicar', 'publicar', $modelo->isPublicar(), $this->traduzir('Ativar?', 'painel-dlx')); ?>
+    </p>
+
+    <div class="form-botoes">
+        <?php echo HTMLForm::botao('salvar', $this->traduzir('Salvar', 'painel-dlx')),
+            HTMLForm::botao('cancelar', $this->traduzir('Cancelar', 'painel-dlx')); ?>
+    </div>
+</form>
+[/DLX-CONTEUDO]

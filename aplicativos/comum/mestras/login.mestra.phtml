@@ -1,0 +1,101 @@
+<?php
+/**
+ * framework-dlx
+ * @version: v1.17.08
+ * @author: Diego Lepera
+ *
+ * Created by Diego Lepera on 2017-07-28. Please report any bug at
+ * https://github.com/dlepera88-php/framework-dlx/issues
+ *
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Diego Lepera http://diegolepera.xyz/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+use DLX\Ajudantes\Sessao;
+use DLX\Ajudantes\Visao as AjdVisao;
+
+# Parâmetros passados para a página
+$params = $this->obterParams();
+?>
+
+<!DOCTYPE html>
+<html lang="<?php echo $params['config-aplicativo']['idioma']; ?>">
+<head>
+    <base href="<?php echo $params['conf:base-html']; ?>"/>
+    <title><?php echo "{$params['tag-title']} | {$params['config-aplicativo']['nome']}"; ?></title>
+
+    <!-- Meta TAGS -->
+    <meta charset="<?php echo $params['config-aplicativo']['encoding']; ?>">
+
+    <!-- Tamanho do dispositivo -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- Compatibilidade IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="<?php echo "{$params['diretorio-relativo']}{$params['config-aplicativo']['dir-imgs']}{$params['config-aplicativo']['favicon']}"; ?>"/>
+
+    <!-- <head> Conteúdo personalizado </head> -->
+    [DLX-HEAD/]
+
+    <!-- Tema da página -->
+    [DLX-ARQUIVOS-CSS/]
+
+    <!-- CSS personalizados -->
+    [DLX-ESTILOS/]
+</head>
+<body>
+
+<!-- Verificar JavaScript -->
+<noscript class="mostrar-msg -erro"><?php echo $this->traduzir('Seu navegador está configurado para <b>não</b> utilizar <b>JavaScript</b>! O sistema não funcionará corretamente. Por favor, ative o JavaScript do seu navegador e atualize a página.'); ?></noscript>
+
+<!-- Verificar versão do IE -->
+<p class="mostrar-msg -erro" id="ie-incompativel" style="display: none;"><?php echo $this->traduzir('Essa versão do <b>Internet Explorer</b> é antiga e não é suportada pelo sistema. Por favor, atualize para a versão mais recente do IE ou instale e utilize o <b>Google Chrome</b>.'); ?></p>
+
+<div id="dlx-grid" class="-login">
+    <header class="dlx-topo">
+        <a href="" class="logo-site"><?php echo $params['config-aplicativo']['nome']; ?></a>
+
+        [DLX-TOPO/]
+    </header>
+
+    <section class="dlx-conteudo">
+        <h1 class="titulo-h1"><?php echo $params['html:titulo-pagina']; ?></h1>
+
+        [DLX-MENSAGENS-USUARIO/]
+        [DLX-CONTEUDO/]
+    </section>
+
+    <footer class="dlx-rodape">
+        [DLX-RODAPE/]
+    </footer>
+</div>
+
+<!-- Carregando -->
+<div id="status-ajax" class="status-ajax"></div>
+
+<!-- Javascripts -->
+[DLX-ARQUIVOS-JS/]
+[DLX-SCRIPTS/]
+
+</body>
+</html>
