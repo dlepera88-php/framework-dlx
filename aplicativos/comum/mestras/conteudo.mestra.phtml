@@ -13,8 +13,8 @@ if (!isset($params)) {
 
 <html>
 <head>
-    <base href="<?php echo $params['base-html']; ?>"/>
-    <title><?php echo "{$params['tag-title']} | {$params['config-aplicativo']['nome']}"; ?></title>
+    <base href="<?php echo $params['conf:base-html'] ?>"/>
+    <title><?php echo "{$params['tag-title']} | {$params['config-aplicativo']['nome']}" ?></title>
 
     [DLX-HEAD/]
     [DLX-ESTILOS/]
@@ -22,13 +22,14 @@ if (!isset($params)) {
 
 <body>
 
-<section class="dlx-conteudo">
-    <h1 class="titulo-h1"><?php echo $params['html:titulo-pagina']; ?></h1>
+<div class="dlx-conteudo">
+    <h1 class="titulo-h1"><?php echo $params['html:titulo-pagina'] ?></h1>
 
     [DLX-MENSAGENS-USUARIO/]
     [DLX-CONTEUDO/]
-</section>
+</div>
 
+[DLX-ARQUIVOS-JS/]
 [DLX-SCRIPTS/]
 
 </body>

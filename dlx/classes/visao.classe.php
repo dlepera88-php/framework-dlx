@@ -167,18 +167,17 @@ class Visao {
      * @param string $pagina_mestra
      */
     public function setPaginaMestra($pagina_mestra) {
+        // Quando o parâmetro HTML dlx-mestra for passado, ele deve sobre por qualquer outra chamada de
+        // alteração de página mestra, pois dessa forma é possível alterar a página mestra a ser carregada
+        // através da URL
+        if (array_key_exists('dlx-mestra', $_GET)) {
+            $pagina_mestra = filter_input(INPUT_GET, 'dlx-mestra');
+        } // Fim if
+
         $this->pagina_mestra = filter_var($pagina_mestra, FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL);
 
         # Verificar se a página mestra é válida
         $this->validarPaginaMestra();
-
-        /*
-         * Quando a página mestra é alterada em tempo de execução e o método gerarLista já tiver sido chamado, é
-         * necessário corrigir o parâmetro 'html:url-lista'
-         */
-        if (array_key_exists('html:url-lista', $this->params)) {
-            $this->adicionarParam('html:url-lista', preg_replace("~{$this->pagina_mestra}/?$~", '', $this->obterParams('html:url-lista')));
-        } // Fim if
     }
 
     public function isExibirAuto() {
@@ -193,7 +192,7 @@ class Visao {
     public function __construct($diretorio = null, $pg_mestra = 'padrao') {
         $this->setDiretorioVisoes($diretorio);
         $this->setPaginaMestra($pg_mestra);
-
+        
         # Carregar os arquivos do tema
         // $this->carregarArquivosTema(\DLX::$dlx->config('aplicativo', 'tema'));
 
@@ -387,6 +386,14 @@ class Visao {
         } // Fim if
     } // Fim do método removerJS
 
+    /**
+     * Listar todos os arquivos JS adicionados até agora.
+     * @return array Retorna um array com os caminhos de cada arquivo JS
+     */
+    public function listaArquivosJS() {
+        return $this->arquivos_js;
+    } // Fim do método listaArquivosJS
+
 
     /**
      * Montar as TAGs HTML para inclusão dos arquivos JS e CSS externos
@@ -398,7 +405,7 @@ class Visao {
             $this->conteudo_arquivos_externos .= '[DLX-ARQUIVOS-CSS]';
 
             foreach ($this->arquivos_css as $css) {
-                $this->conteudo_arquivos_externos .= sprintf('<link rel="stylesheet" type="text/css" href="%s"/>', $css);
+                $this->conteudo_arquivos_externos .= sprintf('<link rel="stylesheet" type="text/css" href="%s"/>' . "\n", $css);
             } // Fim foreach
 
             $this->conteudo_arquivos_externos .= '[/DLX-ARQUIVOS-CSS]';
@@ -408,7 +415,7 @@ class Visao {
             $this->conteudo_arquivos_externos .= '[DLX-ARQUIVOS-JS]';
 
             foreach ($this->arquivos_js as $js) {
-                $this->conteudo_arquivos_externos .= sprintf('<script src="%s"></script>', $js);
+                $this->conteudo_arquivos_externos .= sprintf('<script src="%s"></script>' . "\n", $js);
             } // Fim foreach
 
             $this->conteudo_arquivos_externos .= '[/DLX-ARQUIVOS-JS]';

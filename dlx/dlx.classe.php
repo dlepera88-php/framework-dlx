@@ -512,10 +512,6 @@ class DLX {
                 $this->alterarConfiguracao(['aplicativo' => ['idioma' => $idioma]]);
             } // Fim if
 
-            /*
-             * LC_ALL ainda não deve ser utilizado pois o LC_NUMERIC atrapalha o parâmetro value de campos (inputs)
-             * decimais
-             */
             if(function_exists('shell_exec')) {
                 $encoding = $this->config('aplicativo', 'html')['encoding'];
                 $locales = explode("\n", shell_exec('locale -a'));
@@ -527,6 +523,8 @@ class DLX {
                 } // Fim if ... else
             } // Fim if
 
+            // LC_ALL ainda não deve ser utilizado pois o LC_NUMERIC atrapalha o parâmetro value de
+            // campos (inputs) decimais
             setlocale(LC_COLLATE, $idioma);
             setlocale(LC_CTYPE, $idioma);
             setlocale(LC_MONETARY, $idioma);

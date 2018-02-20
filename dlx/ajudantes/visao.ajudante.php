@@ -153,18 +153,56 @@ class Visao {
      * relativo para uma funcionalidade do sistema
      * @return mixed
      */
-    public static function acoplarHTML($url) {
-        /* return (preg_match('~^(http|https)~', $url) && !preg_match('~^' . static::hostCompleto() . '~', $url))
-            ? static::acoplarHTMLExterno($url)
-            : static::acoplarHTMLInterno($url); */
-        return static::acoplarHTMLExterno($url);
+    public static function acoplarHTML($html, $visao, $tags = null) {
+        // Remover as TAGs que todo documento HTML tem para evitar duplicações
+        $remover = [
+            // <html></html>
+            '~<html>~', '~</html>~i',
+            // <body></body>
+            '~<body>~', '~</body>~i',
+            // Remover a seção <head></head>
+            '~<head>.*?</head>~si'
+        ];
+
+        // Remover as entradas duplicadas de arquivos JS externos
+        $remover = array_merge($remover, array_map(function($js) {
+            return '~<script\s+src="' . $js . '".+/?>(</script>)?~i';
+        }, $visao->listaArquivosJS()));
+
+        $html = preg_replace($remover, '', $html);
+        
+        // Extrair apenas as TAGs informadas no parâmetro $tags
+        if (!empty($tags)) {
+            $lista_tags = implode('|', (array)$tags);
+            $regexp_tags = [
+                '~<(' . $lista_tags . ')\b.*?/>~i',
+                '~<(' . $lista_tags . ')\b.*?>.*?</\1>~si'
+            ];
+            
+            foreach ($regexp_tags as $regexp) {
+                if (preg_match_all($regexp, $html, $conteudo)) {
+                    $html = implode("\n", $conteudo[0]);
+                } // Fim if
+            } // Fim foreach
+        } // Fim if
+        
+        return $html;
     } // Fim do método acoplarHTML
 
 
-    public static function acoplarHTMLInterno($controle, $acao, $params = []) {
+    public static function extrairHTMLInterno($controle, $acao, $params = [], $pg_mestra = null) {
         // TODO: Desenvolver uma maneira de acoplar melhor conteúdos internos
-        $controle->visao->setExibirAuto(false);
-        return call_user_func_array([$controle, $acao], $params);
+        ob_start();
+        // Alterar a página mestra
+        if (!empty($pg_mestra)) {
+            $controle->visao->setPaginaMestra($pg_mestra);
+        } // Fim if
+
+        call_user_func_array([$controle, $acao], $params);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        return $html;
     } // Fim do método acoplarHTMLInterno
 
 
@@ -188,7 +226,7 @@ class Visao {
             $reabrir_sessao = true;
         } // Fim if
 
-        $html = curl_exec($curl);
+        $html = curl_exec($curl) or die(curl_error($curl));
         curl_close($curl);
 
         if ($reabrir_sessao) {

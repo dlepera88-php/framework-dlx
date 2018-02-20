@@ -269,7 +269,7 @@ class Calendario {
 
 
         $html = '<table class="calendario-phphtml">
-            <caption class="mes-ano">' . "{$this->mesPorExtenso($this->getMes())} {$this->getAno()}" . '</caption>
+            <caption class="mes-ano">' . DataHora::mesPorExtenso($this->getMes()) . ' ' . $this->getAno() . '</caption>
             <thead class="dias-semana"><tr>';
 
         # Adicionar os dias da semana no cabeçalho da tabela

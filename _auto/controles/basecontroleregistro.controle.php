@@ -320,23 +320,17 @@ trait RegistroConsulta {
 
     /**
      * Gerar uma página de detalhamento
-     *
      * Obs: A visão deverá ser incluída no controle
      *
-     * @param mixed       $pk  Valor da PK do registro a ser selecionado
-     * @param string|null Nome da página mestra a ser carregada
+     * @param mixed $pk  Valor da PK do registro a ser selecionado
      *
      * @throws DLXExcecao
      */
-    protected function mostrarDetalhes($pk = null, $pg_mestra = null) {
+    protected function mostrarDetalhes($pk = null) {
         $this->modelo->selecionarPK($pk);
         
         if ($this->modelo->reg_vazio) {
             throw new DLXExcecao($this->visao->traduzir('Registro não localizado para gerar a página de detalhamento.'), 1404);
-        } // Fim if
-
-        if (isset($pg_mestra)) {
-            $this->visao->setPaginaMestra($pg_mestra);
         } // Fim if
 
         # Visão
