@@ -218,6 +218,13 @@ class HTMLForm {
         $conf['name'] = filter_var($nome);
         $conf['id'] .= filter_var($id);
 
+        if (!Vetores::arrayMulti($options)) {
+            $options = array_map(
+                function ($v){
+                    return ['VALOR' => $v, 'TEXTO' => $v];
+                }, $options);
+        } // Fim if
+
         return static::htmlRotulo($conf['id'], $rotulo) . static::htmlDica($dica) .
             sprintf(
                 static::HTML_SELECT,

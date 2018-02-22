@@ -33,6 +33,7 @@
  * Copyright (c) 2017 Diego Lepera http://diegolepera.xyz/
  */
 
+/* global console, alert, confirm */
 /* jshint unused: false */
 
 // Eventos ------------------------------------------------------------------ //
@@ -100,3 +101,68 @@ function adicionarEvento($dom, evento, acao) {
         } // Fim if
     });
 } // Fim function adicionarEvento
+
+/**
+ * Encontrar uma função no escopo global (Object window)
+ * @param {String} namespace Nome com ou sem namespace de uma determinada função
+ * @return {Bool|Function} Retornar FALSE se não encontrar a função ou retorna a própria
+ * função, caso exista
+ */
+function encontrarFuncaoNS(namespace) {
+    var funcao = window, nome_funcao = namespace.split('.'), qtde = nome_funcao.length;
+
+    for(var i = 0; i < qtde; i++) {
+        funcao = funcao[nome_funcao[i]];
+    } // Fim for
+
+    return typeof funcao === 'function' ? funcao : false;
+} // Fim encontrarFuncaoNS
+
+// Interação com usuário ----------------------------------------------------------------------- //
+/**
+ * Solicitar uma confirmação antes de executar uma determinada ação
+ * @param  {String}   mensagem Mensagem a ser exibida, solicitando a confirmação.
+ * @param  {Function} acao_sim Função a ser executada ao clicar no botão 'Sim'
+ * @param  {Function} acao_nao Função a ser executada ao clicar no botão 'Não'
+ * @return {Void}
+ */
+function solicitarConfirmacao(mensagem, acao_sim, acao_nao) {
+    if (typeof $.mostrarMsg === 'undefined') {
+        console.warn('Considere usar o plugin $.mostrarMsg! Ele deixa suas mensagens muito mais bonitas e intuitivas.');
+
+        if (confirm(mensagem)) {
+            if (typeof acao_sim === 'function') {
+                acao_sim();
+            } // Fim if
+        } else {
+            if (typeof acao_nao === 'function') {
+                acao_nao();
+            } // Fim if
+        } // Fim if ... else
+    } else {
+        $.mostrarMsg('confirmacao', {
+            mensagem: mensagem,
+            btn_sim: { funcao: acao_sim },
+            btn_nao: { funcao: acao_nao }
+        });
+    } // Fim if
+} // Fim function solicitarConfirmacao
+
+
+/**
+ * Mostrar um alerta simples. Essa função verifica se o plugin $.mostrarMsg está
+ * disponível para uso
+ * @param  {String} mensagem Mensagem a ser exibida
+ * @param  {Object} config   Objeto com as configurações a serem aplicadas no plugin
+ * $.mostrarMsg. Disponível apenas caso o plugin $.mostrarMsg seja utilizado.
+ * @return {Void}
+ */
+function mostrarAlerta(mensagem, config) {
+    if (typeof $.mostrarMsg === 'undefined') {
+        console.warn('Considere usar o plugin $.mostrarMsg! Ele deixa suas mensagens muito mais bonitas e intuitivas.');
+        alert(mensagem);
+    } else {
+        var config_plugin = $.extend({ mensagem: mensagem }, config || {});
+        $.mostrarMsg('alerta', config_plugin);
+    } // Fim if
+} // Fim function mostrarAlerta
