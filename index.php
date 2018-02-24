@@ -29,6 +29,19 @@
  * SOFTWARE.
  */
 
+# Máscaras
+define('MASK_CPF', '000.000.000-00');
+define('MASK_CNPJ', '00.000.000/0000-00');
+define('MASK_TELEFONE_CELULAR_8', '(00) 0000-0000');
+define('MASK_TELEFONE_CELULAR_9', '(00) 0 0000-0000');
+define('MASK_CEP', '00000-000');
+
+# Expressões regulares
+define('EXPREG_CPF', '~^(\d{3}\.){2}\d{3}-\d{2}$~');
+define('EXPREG_CNPJ', '~^\d{2}(\.\d{3}){2}-\d{2}$~');
+define('EXPREG_TELEFONE_GERAL', '~^\(\d{2}\)\s([6-9]\s)?\d{4}-\d{4}$~');
+define('EXPREG_CEP', '~^\d{4}-\d{3}$~');
+
 require_once 'dlx/dlx.classe.php';
 
 try {

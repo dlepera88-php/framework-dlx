@@ -43,19 +43,6 @@ define('TXT_AJAX_ACESSANDO', AjdVisao::traduzirTexto('Acessando o sistema... Por
 define('TXT_AJAX_SALVANDO_ARQUIVO', AjdVisao::traduzirTexto('Salvando arquivo... Por favor aguarde.'));
 define('TXT_AJAX_EXCLUINDO_REGISTROS', AjdVisao::traduzirTexto('Excluindo registros... Por favor aguarde.'));
 
-# Máscaras
-define('MASK_CPF', '000.000.000-00');
-define('MASK_CNPJ', '00.000.000/0000-00');
-define('MASK_TELEFONE_CELULAR_8', '(00) 0000-0000');
-define('MASK_TELEFONE_CELULAR_9', '(00) 0 0000-0000');
-define('MASK_CEP', '00000-000');
-
-# Expressões regulares
-define('EXPREG_CPF', '~^(\d{3}\.){2}\d{3}-\d{2}$~');
-define('EXPREG_CNPJ', '~^\d{2}(\.\d{3}){2}-\d{2}$~');
-define('EXPREG_TELEFONE_GERAL', '~^\(\d{2}\)\s([6-9]\s)?\d{4}-\d{4}$~');
-define('EXPREG_CEP', '~^\d{4}-\d{3}$~');
-
 class HTMLForm {
     # Trechos de códigos HTML
     const HTML_ROTULO = '<label for="%s" class="form-rotulo">%s:</label>';
@@ -66,7 +53,6 @@ class HTMLForm {
     const HTML_SELECT = '<select %s>%s</select>';
     const HTML_OPTION = '<option value="%s"%s>%s</option>';
     const HTML_CHK_SIM_NAO = '<input %s/><label for="%s"></label>';
-
 
     /**
      * @var array Vetor com as configurações de inputs
