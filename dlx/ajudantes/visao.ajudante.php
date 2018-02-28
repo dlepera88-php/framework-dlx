@@ -206,7 +206,11 @@ class Visao {
     } // Fim do método acoplarHTMLInterno
 
 
-    private static function acoplarHTMLExterno($url) {
+    public static function extrairHTMLExterno($url) {
+        // Caso o parâmetro URL não informar o protocolo ou o domínio a ser acessado, será considerado
+        // conteúdo interno. Por isso devo adicionar o host atual no início da URL.
+        $url = preg_match('~^http(s)?~', $url) === 0 ? self::hostCompleto() . $url : $url;
+        
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 10);
