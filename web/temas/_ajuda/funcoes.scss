@@ -1,0 +1,129 @@
+/**
+ * @author: Diego Lepera
+ * @description: Funções variadas para auxiliar na criação dos layouts
+ */
+
+/**
+ * Facilitar a criação de animações com os key frames de todos os navegadores
+ *
+ * @param string $nome Nome do keyframe a ser criado
+ */
+@mixin todosKeyFrames ($nome) {
+    @-webkit-keyframes #{$nome} {
+        @content;
+    }
+
+    @-khtml-keyframes #{$nome} {
+        @content;
+    }
+
+    @-moz-keyframes #{$nome} {
+        @content;
+    }
+
+    @-ms-keyframes #{$nome} {
+        @content;
+    }
+
+    @-o-keyframes #{$nome} {
+        @content;
+    }
+
+    @keyframes #{$nome} {
+        @content;
+    }
+}
+
+
+// Grupos de campos de formulários ---------------------------------------------------------------------------------- //
+@mixin camposAlfaNum($pseudo-classe: null) {
+    &.-texto#{$pseudo-classe},
+    &.-numero#{$pseudo-classe},
+    &.-moeda#{$pseudo-classe},
+    &.-data#{$pseudo-classe},
+    &.-cpf#{$pseudo-classe},
+    &.-cnpj#{$pseudo-classe},
+    &.-senha#{$pseudo-classe},
+    &.-busca#{$pseudo-classe},
+    &.-select#{$pseudo-classe},
+    &.-email#{$pseudo-classe},
+    &.-fone#{$pseudo-classe},
+    &.-textarea#{$pseudo-classe},
+    &.-arquivo#{$pseudo-classe},
+    &.-url#{$pseudo-classe} {
+        @content;
+    }
+}
+
+@mixin camposAlfa($pseudo-classe: null) {
+    &.-texto#{$pseudo-classe},
+    &.-senha#{$pseudo-classe},
+    &.-busca#{$pseudo-classe},
+    &.-select#{$pseudo-classe},
+    &.-email#{$pseudo-classe},
+    &.-textarea#{$pseudo-classe},
+    &.-arquivo#{$pseudo-classe},
+    &.-url#{$pseudo-classe} {
+        @content;
+    }
+}
+
+@mixin camposNum($pseudo-classe: null) {
+    &.-numero#{$pseudo-classe},
+    &.-moeda#{$pseudo-classe},
+    &.-data#{$pseudo-classe},
+    &.-cpf#{$pseudo-classe},
+    &.-cnpj#{$pseudo-classe},
+    &.-fone#{$pseudo-classe} {
+        @content;
+    }
+}
+
+
+// Função para ordenação de listas no SASS utilizando o algorítimo 'Quick Sort' ------------------------------------- //
+/// Quick sort
+/// @author Sam Richards
+/// @param {List} $list - list to sort
+/// @return {List}
+@function quick-sort($list) {
+    $less:  ();
+    $equal: ();
+    $large: ();
+
+    @if length($list) > 1 {
+        $seed: nth($list, ceil(length($list) / 2));
+
+        @each $item in $list {
+            @if ($item == $seed) {
+                $equal: append($equal, $item);
+            } @else if ($item < $seed) {
+                $less: append($less, $item);
+            } @else if ($item > $seed) {
+                $large: append($large, $item);
+            }
+        }
+
+        @return join(join(quick-sort($less), $equal), quick-sort($large));
+    }
+
+    @return $list;
+}
+
+
+// Função semelhante ao str_replace do PHP -------------------------------------------------------------------------- //
+/// Replace `$search` with `$replace` in `$string`
+/// @author Hugo Giraudel
+/// @source https://css-tricks.com/snippets/sass/str-replace-function/
+/// @param {String} $string - Initial string
+/// @param {String} $search - Substring to replace
+/// @param {String} $replace ('') - New value
+/// @return {String} - Updated string
+@function str-replace($string, $search, $replace: '') {
+    $index: str-index($string, $search);
+
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
+
+    @return $string;
+}

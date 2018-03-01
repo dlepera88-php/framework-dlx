@@ -1,0 +1,80 @@
+/**
+ * @author: Diego Lepera
+ * @description: Criação de formas geométricas com CSS 3
+ */
+
+/* -----------------------------------------------------------------------------
+ *  Formas geometricas
+ * -------------------------------------------------------------------------- */
+
+
+// Triângulos ------------------------------------------------------------------------------------------------------- //
+@mixin triangulo ($direcao: 'direita', $cor: #000, $largura: 5px, $altura: 5px) {
+    // Tamanho
+    width: 0;
+    height: 0;
+
+    // Configurar as bordas de acordo com a direção
+    // Visual
+    @if ($direcao == 'baixo') {
+        border-left: $largura solid transparent;
+        border-top: $altura solid $cor;
+        border-right: $altura solid transparent;
+    } @else if ($direcao == 'cima') {
+        border-left: $largura solid transparent;
+        border-bottom: $altura solid $cor;
+        border-right: $altura solid transparent;
+    } @else if ($direcao == 'direita') {
+        border-top: $largura solid transparent;
+        border-left: $altura solid $cor;
+        border-bottom: $altura solid transparent;
+    } @else if ($direcao == 'esquerda') {
+        border-top: $largura solid transparent;
+        border-right: $altura solid $cor;
+        border-bottom: $altura solid transparent;
+    } @else if ($direcao == 'baixo-direita') {
+        border-bottom: $largura solid $cor;
+        border-left: $altura solid transparent;
+    }
+
+    display: inline-block;
+}
+
+
+// Círculo ---------------------------------------------------------------------------------------------------------- //
+@mixin circulo($cor: #000, $tamanho: 5px) {
+    // Tamanho
+    width: $tamanho;
+    height: $tamanho;
+
+    // Visual
+    border-radius: 50%;
+    background-color: $cor;
+    display: inline-block;
+}
+
+
+// Trapézios -------------------------------------------------------------------------------------------------------- //
+@mixin formaTrapezioV($largura, $desvio, $cor: #000) {
+    // Visual
+    border-bottom: $largura solid $cor;
+    border-left: $desvio solid transparent;
+    border-right: $desvio solid transparent;
+    display: block;
+
+    // Tamanho
+    height: 0;
+    width: auto;
+}
+
+@mixin formaTrapezioH($largura, $altura, $desvio, $cor: #000) {
+    // Visual
+    border-right: $largura solid $cor;
+    border-top: $desvio solid transparent;
+    border-bottom: $desvio solid transparent;
+    display: block;
+
+    // Tamanho
+    height: $altura;
+    width: auto;
+}

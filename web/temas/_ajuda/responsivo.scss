@@ -1,0 +1,100 @@
+/**
+ * @author: Diego Lepera
+ * @description: Funções específicas para layouts responsivos
+ */
+
+// $conf-telas: (
+//     'mobile': 0 480px 6,
+//     'tablet': 481px 1024px 6,
+//     'laptop': 1025px null 12
+// ) !default;
+
+$conf-telas: (
+    mobile: (min: 0, max: 480px, colunas: 6, margem-grid: 1%),
+    tablet: (min: 481px, max: 1024px, colunas: 6, margem-grid: 1%),
+    laptop: (min: 1025px, max: 1280px, colunas: 12, margem-grid: 1%),
+    desktop: (min: 1281px, colunas: 12, margem-grid: 1%)
+);
+
+
+/**
+ * Criar a media query de acordo no tipo de tela
+ *
+ * @param string $tela Nome do tipo de tela a ser considerado para gerar a media query
+ */
+@mixin media-query ($tela) {
+    // Colocar as variáveis $min e $max no escopo 'global' da função
+    $min: 0;
+    $max: 0;
+
+    @if type-of($tela) == 'string' {
+        @if map_has_key($conf-telas, $tela) {
+            $conf: map_get($conf-telas, $tela);
+
+            @if map_has_key($conf, min) == false {
+                @warn "O parâmetro 'min' é obrigatório para a configuração de telas.";
+            }
+
+            $min: map_get($conf, min);
+            $max: if(map_has_key($conf, max), map_get($conf, max), null);
+        }
+    } @else {
+        $todos-min: ();
+        $todos-max: ();
+
+        @each $ctela in $tela {
+            $conf: map_get($conf-telas, $ctela);
+
+            @if map_has_key($conf, min) {
+                $todos-min: append($todos-min, map_get($conf, min));
+            }
+
+            @if $max {
+                @if map_has_key($conf, max) {
+                    $todos-max: append($todos-max, map_get($conf, max));;
+                } @else {
+                    $max: null;
+                }
+            }
+        }
+
+        $min: nth(quick-sort($todos-min), 1);
+        $max: if($max, nth(quick-sort($todos-max), length($todos-max)), null);
+    }
+
+    @media (min-width: $min) {
+        @if $max {
+            @media (max-width: $max) {
+                @content;
+            }
+        } @else {
+            @content;
+        }
+    }
+}
+
+
+/// Criar seletores de visualização responsiva para ocultar elementos em determinadas telas
+///
+/// @param string $seletor Configuração de tela
+@mixin seletorResponsivo ($tela) {
+    @if map_has_key($conf-telas, $tela) {
+        $seletor: '.v-';
+
+        @each $ctela, $conf in $conf-telas {
+            @if $ctela != $tela {
+                $seletor: '#{$seletor}, .v-#{$ctela}:not(&)'
+            }
+        }
+
+        .v-#{$tela} {
+            #{$seletor} {
+                &, &::before, &::after {
+                    display: none !important;
+                }
+            }
+        }
+    } @else {
+        @warn "Configurações da tela '#{$tela}' não encontradas!";
+    }
+}

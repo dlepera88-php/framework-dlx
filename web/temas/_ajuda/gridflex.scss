@@ -1,0 +1,83 @@
+/**
+ * @author: Diego Lepera
+ * @description: Funções para gerar uma Grade Flexível (grid flex)
+ */
+
+@import 'compatibilidade';
+
+$numeros-extenso: (
+    'um', 'dois', 'tres', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez',
+    'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove', 'vinte'
+);
+
+/**
+ * Utilizar uma quantidade específica de colunas de uma grid
+ *
+ * @param int     $qtde-colunas  Quantidade de colunas a serem utilizadas
+ * @param percent $margem        Margem a ser aplicada em cada coluna
+ * @param int     $total-colunas Quantidade total de colunas contidas na grade flexível
+ */
+@mixin usarColunas ($qtde-colunas: 1, $margem: 0, $total-colunas: 12) {
+    // Flex
+    @include flex($total-colunas / $qtde-colunas);
+    
+    // Alinhamento
+    justify-content: space-between;
+
+    // Tamanho
+    min-width: $tm-todas-colunas;
+    max-width: $tm-todas-colunas;
+    width: $tm-todas-colunas;
+
+    // Margens
+    margin-left: $margem;
+
+    // Visual
+    /*
+    Alterar o box-sizing para border-box.
+    Dessa forma o CSS considera o tamanho da coluna até sua borda e não apenas o conteúdo, como é o padrão dos navegadores
+    */
+    @include boxSizing(border-box);
+}
+
+
+/**
+ * Gerar as classes de colunas de acordo com a quantidade de colunas necessárias
+ *
+ * @param int     $qtde-colunas  Quantidade de classes a serem criadas
+ * @param percent $margem        Margem a ser aplicada em cada coluna
+ * @param int     $total-colunas Quantidade total de colunas existentes para a grid,
+ * @param string  $nome-classe   Formato de como será a formação dos nomes das classes: [numero] será substituído pelo
+ *                               número de colunas utilizadas; [n-extenso] será substituída pelo extenso do número de
+ *                               colunas utilizadas
+ */
+@mixin gerarClassesColunas ($qtde-colunas: 1, $margem: 0, $total-colunas: 12, $nome-classe: 'flex-[numero]-colunas') {
+    @for $c from 1 through $qtde-colunas {
+        $classe: str-replace(str-replace($nome-classe, '[numero]', $c), '[n-extenso]', nth($numeros-extenso, $c));
+
+        /*
+        Quantidade de elementos por cada linha
+        */
+        $elem-linha: ceil($qtde-colunas / $c);
+
+        .#{$classe} {
+            @include usarColunas($c, $margem, $total-colunas);
+        }
+
+        @if $c < $qtde-colunas {
+            .#{$classe}:nth-child(#{$elem-linha}n + 1) {
+                // Margens
+                margin-left: 0;
+            }
+        }
+
+        @if ($total-colunas == $c) {
+            .flex-todas-colunas {
+                @include usarColunas($c, 0, $total-colunas);
+
+                // Margens
+                margin-left: 0;
+            }
+        }
+    }
+}
