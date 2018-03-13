@@ -438,29 +438,48 @@ class DLX {
      * @param string|array $metodo Método da requisição a qual essa rota deve ser
      * aplicada, GET ou POST. Pode ser informado um array com os 2 métodos,
      * caso a rota seja para ambos os métodos
+     * @param bool $sobrepor Informa se essa rota deve sobrepor uma rota já existente.
      */
-    public function adicionarRota($rota, $config, $metodo = 'get') {
+    public function adicionarRota($rota, $config, $metodo = 'get', $sobrepor = false) {
         if (isset($metodo)) {
             if (is_array($metodo)) {
                 foreach ($metodo as $m) {
-                    $this->adicionarRota($rota, $config, $m);
+                    $this->adicionarRota($rota, $config, $m, $sobrepor);
                 } // Fim foreach
             } else {
-                $app_home = $this->config('aplicativo', 'home');
-                $rota = str_replace('%home%', $app_home, $rota);
+                if (!array_key_exists($rota, $this->rotas[$metodo]) || $sobrepor) {
+                    $app_home = $this->config('aplicativo', 'home');
+                    $rota = str_replace('%home%', $app_home, $rota);
 
-                if (!empty($app_home)) {
-                    if (is_array($config) && array_key_exists('params', $config)) {
-                        $config['params'] = "/-{$config['params']}";
-                    } elseif (is_string($config)) {
-                        $config = "/-{$config}";
-                    } // Fim if ... else
+                    if (!empty($app_home)) {
+                        if (is_array($config) && array_key_exists('params', $config)) {
+                            $config['params'] = "/-{$config['params']}";
+                        } elseif (is_string($config)) {
+                            $config = "/-{$config}";
+                        } // Fim if ... else
+                    } // Fim if
+                    
+                    $this->rotas[$metodo][$rota] = $config;
                 } // Fim if
-
-                $this->rotas[$metodo][$rota] = $config;
             } // Fim if
         } // Fim if ... else
     } // Fim do método adicionarRota
+
+    /**
+     * Excluir uma determinada rota.
+     * @param string $rota Rota a ser excluída.
+     * @param string|array $metodo Método onde a rota foi registrada.
+     * @return void
+     */
+    public function excluirRota($rota, $metodo = 'get') {
+        if (is_string($metodo)) {
+            unset($this->rotas[$metodo][$rota]);
+        } else {
+            foreach ($metodo as $m) {
+                $this->excluirRota($rota, $m);
+            } // Fim foreach
+        } // Fim if
+    } // Fim do método excluirRota
 
 
 // Auto --------------------------------------------------------------------- //
