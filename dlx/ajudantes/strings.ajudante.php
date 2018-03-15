@@ -182,4 +182,15 @@ class Strings {
             $texto
         );
     } // Fim do método plural2singular
+
+
+    public static function naoVazio() {
+        $args = func_get_args();
+
+        foreach ($args as $valor) {
+            if (!empty($valor)) {
+                return $valor;
+            } //  Fim if
+        } // Fim foreach
+    } // Fim do método naoVazio
 } // Fim do Ajudante Strings

@@ -196,20 +196,32 @@ class HTMLForm {
      * @param string|null $dica    [opcional] Dica vinculada a esse campo
      * @param array       $params  [opcional] Outros atributos do campo
      * @param array       $options Vetor multimensional com as opções a serem adicionadas nesse combo
-     *
+     * @param array|null  $option_inicial Configurações do <option></option> inicial a ser exibido quando
+     * nenhuma outra opção for selecionada.
+     * 
      * @return string
      */
-    public static function comboSelect($nome, $id, $valor, $rotulo = null, $dica = null, array $params = [], array $options = []) {
+    public static function comboSelect($nome, $id, $valor, $rotulo = null, $dica = null, array $params = [], array $options = [], $option_inicial = [['VALOR' => '', 'TEXTO' => 'Selecione uma opção']]) {
         $conf = array_replace_recursive(static::$conf_inputs['select'], $params);
         $conf['name'] = filter_var($nome);
         $conf['id'] .= filter_var($id);
 
-        if (!Vetores::arrayMulti($options)) {
-            $options = array_map(
-                function ($v){
-                    return ['VALOR' => $v, 'TEXTO' => $v];
-                }, $options);
-        } // Fim if
+        if (!empty($options)) {
+            if (!Vetores::arrayMulti($options)) {
+                $options = array_map(
+                    function ($v){
+                        return ['VALOR' => $v, 'TEXTO' => $v];
+                    }, $options);
+            } // Fim if
+
+            // Adicionar o option inicial com valor em branco, para indicar o usuário a selecionar uma das
+            // opções
+            $options = array_merge($option_inicial, $options);
+        } else {
+            // Se o array $options estiver vazio, informar ao usuário que nenhuma opção foi adicionada ao
+            // select / combobox
+            $options = [['VALOR' => '', 'TEXTO' => AjdVisao::traduzirTexto('Nenhuma opção adicionada')]];
+        } // Fim if ... else
 
         return static::htmlRotulo($conf['id'], $rotulo) . static::htmlDica($dica) .
             sprintf(
