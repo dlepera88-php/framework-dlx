@@ -128,6 +128,13 @@ class Visao {
         'tag-title' => 'Sem título'
     ];
 
+    /**
+     * Classes extras a serem adicionadas em elementos HTML da página mestra.
+     * As chaves devem ser os identificadores do elemento e o valor as classes a serem adicionadas.
+     * @var array
+     */
+    protected $classes_extras = [];
+
 
     /**
      * @return string
@@ -259,11 +266,70 @@ class Visao {
     public function carregarPaginaMestra() {
         ob_start();
         include_once $this->arquivo_pagina_mestra;
-        $this->conteudo_pagina_mestra = ob_get_contents();
+        $this->conteudo_pagina_mestra = $this->carregarClassesExtras(ob_get_contents());
         ob_end_clean();
-
+        
         $this->identificarAreas();
     } // Fim do método carregarPaginaMestra
+
+    /**
+     * Adicionar classes extras a elementos HTML da página mestra.
+     *
+     * @param string Identificador do trecho HTML. Se o identificador iniciar com ., será procurado um elemento
+     * com a seguinte classe, ao iniciar com #, será procurado um elemento com aquele ID e se não iniciar com
+     * nenhum desses carcateres, será procurado a seguinte tag. Funciona de forma semelhante aos seletores jQuery.
+     * @param string $classes Lista de classes a serem adicionadas ao elemento HTML indicado.
+     * @return void
+     */
+    public function adicionarClassesExtras($elemento_html, $classes) {
+        $this->classes_extras[$elemento_html] .= trim(" {$classes}");
+    } // Fim do método adicionarClassesExtras
+
+    /**
+     * Carregar as classes extras nos elementos conforme configurado.
+     *
+     * @param string $html HTML a ser modificado.
+     * @return void
+     */
+    private function carregarClassesExtras($html) {
+        $identificar_tags = function($seletor, $html) {
+            define('SELETOR_TAG', '~<%s.*/?>~');
+            define('SELETOR_ID', '~<.*id="%s".*/?>~');
+            define('SELETOR_CLASSE', '~<.*class="[\w\d\s-]*\s?%s\s?[\w\d\s-]*".*/?>~');
+
+            // Verifico o primeiro caractere do seletor para saber como procurar
+            switch ($seletor[0]) {
+                // IDs
+                case '#': $usar_seletor = sprintf(SELETOR_ID, substr($seletor, 1)); break;
+                case '.': $usar_seletor = sprintf(SELETOR_CLASSE, substr($seletor, 1)); break;
+                default: $usar_seletor = sprintf(SELETOR_TAG, $seletor); break;
+            } // Fim switch
+
+            preg_match($usar_seletor, $html, $tags);
+
+            return $tags;
+        };
+
+        $alterar_tag = function ($tag, $classes) {
+            define('TAG_COM_CLASS', '~class="([\w\d\s-]+)"~i');
+            define('TAG_SEM_CLASS', '~(/?>$)~');
+
+            return preg_match('~class=~', $tag)
+                ? preg_replace(TAG_COM_CLASS, "class=\"$1 {$classes}\"", $tag)
+                : preg_replace(TAG_SEM_CLASS, " class=\"{$classes}\"$1", $tag);
+        };
+
+        foreach ($this->classes_extras as $seletor => $classes) {
+            $tags = $identificar_tags($seletor, $html);
+
+            foreach ($tags as $tag) {
+                $tag_alterada = $alterar_tag($tag, $classes);
+                $html = str_replace($tag, $tag_alterada, $html);
+            } // Fim foreach        
+        } // Fim foreach
+        
+        return $html;
+    } // Fim do método carregarClassesExtras
 
 
 // Templates -------------------------------------------------------------------------------------------------------- //
@@ -530,6 +596,11 @@ class Visao {
 
 
 // Conteúdo --------------------------------------------------------------------------------------------------------- //
+    /**
+     * Renderizar o conteúdo HTML e mostrar ao usuário.
+     *
+     * @return void
+     */
     public function mostrarConteudo() {
         $this->carregarArquivosTema($this->getTema());
 
