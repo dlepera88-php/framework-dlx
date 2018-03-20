@@ -1,0 +1,34 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Direcionar o usuário para o Painel DLX
+    RewriteCond %{HTTP_HOST} ^painel-dlx
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f [OR]
+    RewriteCond %{SCRIPT_FILENAME} index.php$
+
+    # Regra para levar o usuário ao conteúdo do Painel DLX
+    RewriteRule ^(.*)$ index.php?dlx-url=$1&dlx-aplicativo=painel-dlx&dlx-ambiente=dev [QSA,L]
+
+    # Direcionar o usuário para o site
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f [OR]
+    RewriteCond %{SCRIPT_FILENAME} index.php$
+
+    # Regra para levar o usuário ao conteúdo do site
+    RewriteRule ^painel-dlx/(.*)$ index.php?dlx-url=painel-dlx/$1&dlx-aplicativo=painel-dlx&dlx-ambiente=dev [QSA,L]
+
+    # Direcionar o usuário para o site
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f [OR]
+    RewriteCond %{SCRIPT_FILENAME} index.php$
+    
+    RewriteRule ^([a-z]{2}[\-_][A-Z]{2})/(.*)$ index.php?dlx-idioma=$1&dlx-url=$1/$2&dlx-aplicativo=website&dlx-ambiente=dev [QSA,L]
+
+    # Direcionar o usuário para o site
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f [OR]
+    RewriteCond %{SCRIPT_FILENAME} index.php$
+
+    RewriteRule ^(.*)$ index.php?dlx-url=$1&dlx-aplicativo=website&dlx-ambiente=dev [QSA,L]
+</IfModule>
