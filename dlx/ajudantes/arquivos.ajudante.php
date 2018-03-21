@@ -288,7 +288,6 @@ class Arquivos {
      * @return array    Vetor contendo apenas os arquivos que correspondem ao prefixo informado
      */
     public static function filtrarPrefixo($diretorio, $prefixo, $extensao = 'php') {
-        // var_dump(glob("{$diretorio}*.{$prefixo}.{$extensao}"));
         return glob("{$diretorio}*.{$prefixo}.{$extensao}");
     } // Fim do método filtrarPrefixo
 
