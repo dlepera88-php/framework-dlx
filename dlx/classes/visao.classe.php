@@ -497,9 +497,8 @@ class Visao {
      */
     public function carregarArquivosTema($tema = null) {
         $dir_tema = \DLX::DIR_TEMAS . "{$tema}/";
-        $funcao = function ($arquivo) use ($dir_tema) {
-            preg_match('~\.(css|js)$~', $arquivo, $extensao);
-            return AjdVisao::diretorioRelativo() . "{$dir_tema}{$extensao[1]}/{$arquivo}";
+        $funcao = function ($arquivo) {
+            return AjdVisao::diretorioRelativo() . $arquivo;
         };
 
         # Adicionar os arquivos CSS

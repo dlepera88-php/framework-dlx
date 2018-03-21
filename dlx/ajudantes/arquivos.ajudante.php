@@ -288,9 +288,8 @@ class Arquivos {
      * @return array    Vetor contendo apenas os arquivos que correspondem ao prefixo informado
      */
     public static function filtrarPrefixo($diretorio, $prefixo, $extensao = 'php') {
-        return file_exists($diretorio)
-            ? preg_grep("~[\.\-]{$prefixo}\.{$extensao}$~", preg_grep('~^[^\.]~', scandir($diretorio)))
-            : [];
+        // var_dump(glob("{$diretorio}*.{$prefixo}.{$extensao}"));
+        return glob("{$diretorio}*.{$prefixo}.{$extensao}");
     } // Fim do método filtrarPrefixo
 
 
@@ -302,9 +301,9 @@ class Arquivos {
      */
     public static function carregarArquivos($diretorio, $prefixo) {
         $arquivos = static::filtrarPrefixo($diretorio, $prefixo);
-
+        
         foreach ($arquivos as $a) {
-            include_once "{$diretorio}{$a}";
+            include_once  $a;
         } // Fim foreach
     } // Fim do método carregarArquivos
 

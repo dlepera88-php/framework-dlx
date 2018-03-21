@@ -308,14 +308,14 @@ class DLX {
      * @return void
      */
     protected function carregarConfiguracao () {
-        $arquivo = sprintf(self::DIR_APLICATIVO . self::ARQUIVO_CONFIG, $this->aplicativo, $this->ambiente);
+        $arquivo = 'config.inc.php';
 
         if (!file_exists($arquivo)) {
             throw new Exception(sprintf('Arquivo de configuração <b>%s</b> não encontrado.', $arquivo), 404);
         } // Fim if
 
         include_once $arquivo;
-
+        
         if (isset($config)) {
             $this->alterarConfiguracao($config);
         } // Fim if
@@ -339,7 +339,7 @@ class DLX {
      * @return mixed         Retorna o valor da configuração solicitada. Se a
      * configuração não for encontrada, retorna null e gera um log.
      */
-    public function config ($grupo = null, $nome = null) {
+    public function config($grupo = null, $nome = null) {
         if (empty($grupo) && empty($nome)) {
             return $this->config;
         } elseif (!empty($grupo) && empty($nome)) {
