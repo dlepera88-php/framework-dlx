@@ -146,7 +146,7 @@ class Roteador {
          * INPUT_ENV, caso seja necessário
          */
         $metodo = strtolower(filter_var($_SERVER['REQUEST_METHOD']));
-
+        
         if (array_key_exists($metodo, $this->rotas)) {
             foreach ($this->rotas[$metodo] as $r => $v) {
                 if (preg_match("~{$r}~", $url)) {

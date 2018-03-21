@@ -31,7 +31,6 @@
 
 namespace DLX\Ajudantes;
 
-
 use DLX\Classes\Controle;
 use DLX\Classes\Roteador;
 use DLX\Excecao\DLX as DLXExcecao;
@@ -113,8 +112,8 @@ class Visao {
      * @param string $idioma   Sigla do idioma
      * @param string $dominio  Nome o domínio onde se encontram as traduções
      */
-    public static function adicionarTraducao($texto, $traducao = '', $idioma = 'pt_BR', $dominio = 'global') {
-        if (preg_match('~^[a-z]{2}_[A-Z]{2}$~', $idioma)) {
+    public static function adicionarTraducao($texto, $traducao = '', $idioma = 'br', $dominio = 'global') {
+        if (preg_match(EXPREG_IDIOMA, $idioma)) {
             static::$idiomas[$dominio][$idioma][filter_var($texto)] = filter_var($traducao);
         } // Fim if
     } // Fim do método adicionarTraducao
@@ -136,10 +135,10 @@ class Visao {
                 'idioma_sigla',
                 FILTER_VALIDATE_REGEXP,
                 \DLX::$dlx->config('aplicativo', 'idioma'),
-                ['options' => ['regexp' => '~^[a-z]{2}_[A-Z]{2}$~']]
+                ['options' => ['regexp' => EXPREG_IDIOMA]]
             );
         } // Fim if
-
+        
         return array_key_exists($dominio, static::$idiomas) && array_key_exists($idioma, static::$idiomas[$dominio]) &&
         array_key_exists($texto, static::$idiomas[$dominio][$idioma]) && !empty(static::$idiomas[$dominio][$idioma][$texto])
             ? static::$idiomas[$dominio][$idioma][$texto]

@@ -8,7 +8,7 @@
 
 use DLX\Ajudantes\Visao as AjdVisao;
 
-define('IDIOMA_SIGLA', 'en_US');
+define('IDIOMA_SIGLA', 'en');
 $__DOMINIO = 'global';
 
 AjdVisao::adicionarTraducao('Seu navegador está configurado para <b>não</b> utilizar <b>JavaScript</b>! O sistema não funcionará corretamente. Por favor, ative o JavaScript do seu navegador e atualize a página.', 'Your browser is set to <b>NOT</b> use <b>JavaScript</b> The system does not work properly. Please enable JavaScript in your browser and refresh the page.', IDIOMA_SIGLA, $__DOMINIO);

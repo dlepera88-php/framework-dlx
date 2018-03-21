@@ -450,10 +450,16 @@ class DLX {
                 if (!array_key_exists($rota, $this->rotas[$metodo]) || $sobrepor) {
                     $app_home = $this->config('aplicativo', 'home');
                     $rota = str_replace('%home%', $app_home, $rota);
-
+                    
                     if (!empty($app_home)) {
+                        // Adicionar um pulo para posicionar os parâmetros corretamente em relação a
+                        // rota que está sendo configurada. Essa ação deve ser feita apenas quando a rota
+                        // define parâmetros via URL. Quando a rota envia parâmetros fixos, através de um 
+                        // array, não é necessário adicionar o pulo.
                         if (is_array($config) && array_key_exists('params', $config)) {
-                            $config['params'] = "/-{$config['params']}";
+                            if (is_string($config['params'])) {
+                                $config['params'] = "/-{$config['params']}";
+                            } // Fim if
                         } elseif (is_string($config)) {
                             $config = "/-{$config}";
                         } // Fim if ... else
@@ -525,8 +531,16 @@ class DLX {
 
 
 // Idioma ------------------------------------------------------------------- //
+    /**
+     * Carregar arquivos de idioma.
+     *
+     * @param string $idioma Identificador do idioma a ser carregado.
+     * @return void
+     */
     public function carregarIdioma($idioma) {
-        if (preg_match('~^[a-z]{2}_[A-Z]{2}$~', $idioma)) {
+        if (preg_match(EXPREG_IDIOMA, $idioma)) {
+            $idioma = str_replace('-', '_', $idioma);
+            
             if ($this->config('aplicativo', 'idioma') !== $idioma) {
                 $this->alterarConfiguracao(['aplicativo' => ['idioma' => $idioma]]);
             } // Fim if
@@ -534,14 +548,14 @@ class DLX {
             if(function_exists('shell_exec')) {
                 $encoding = $this->config('aplicativo', 'html')['encoding'];
                 $locales = explode("\n", shell_exec('locale -a'));
-
+                
                 if (in_array("{$idioma}.{$encoding}", $locales)) {
                     $idioma = "{$idioma}.{$encoding}";
                 } elseif (in_array("{$idioma}." . str_replace('-', '', strtolower($encoding)), $locales)) {
                     $idioma = "{$idioma}." . str_replace('-', '', strtolower($encoding));
                 } // Fim if ... else
             } // Fim if
-
+            
             // LC_ALL ainda não deve ser utilizado pois o LC_NUMERIC atrapalha o parâmetro value de
             // campos (inputs) decimais
             setlocale(LC_COLLATE, $idioma);
@@ -579,7 +593,7 @@ class DLX {
      * Identificar a versão atual do Framework DL
      * @return string Número da versão atual
      */
-    public function versao () {
+    public function versao() {
         $abrir = fopen('index.php', 'r');
         $ler = fread($abrir, 60);
         preg_match('~@version:\s(v[\d\.]+(\-r[\d]+)?)~', $ler, $versao);

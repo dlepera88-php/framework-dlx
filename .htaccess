@@ -23,7 +23,7 @@
     RewriteCond %{SCRIPT_FILENAME} !-f [OR]
     RewriteCond %{SCRIPT_FILENAME} index.php$
     
-    RewriteRule ^([a-z]{2}[\-_][A-Z]{2})/(.*)$ index.php?dlx-idioma=$1&dlx-url=$1/$2&dlx-aplicativo=website&dlx-ambiente=dev [QSA,L]
+    RewriteRule ^([a-z]{2})/(.*)$ index.php?dlx-idioma=$1&dlx-url=$1/$2&dlx-aplicativo=website&dlx-ambiente=dev [QSA,L]
 
     # Direcionar o usuário para o site
     RewriteCond %{SCRIPT_FILENAME} !-d

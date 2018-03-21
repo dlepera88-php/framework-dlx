@@ -330,7 +330,9 @@ trait RegistroConsulta {
         $this->modelo->selecionarPK($pk);
         
         if ($this->modelo->reg_vazio) {
-            throw new DLXExcecao($this->visao->traduzir('Registro não localizado para gerar a página de detalhamento.'), 1404);
+            $this->mostrarMensagemUsuario($this->visao->traduzir('Registro não localizado para gerar a página de detalhamento.'), '-info', 'html');
+            $this->visao->mostrarConteudo();
+            exit;
         } // Fim if
 
         # Visão

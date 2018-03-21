@@ -41,6 +41,7 @@ define('EXPREG_CPF', '~^(\d{3}\.){2}\d{3}-\d{2}$~');
 define('EXPREG_CNPJ', '~^\d{2}(\.\d{3}){2}-\d{2}$~');
 define('EXPREG_TELEFONE_GERAL', '~^\(\d{2}\)\s([6-9]\s)?\d{4}-\d{4}$~');
 define('EXPREG_CEP', '~^\d{4}-\d{3}$~');
+define('EXPREG_IDIOMA', '~^[a-z]{2,3}([-_][A-Za-z]{2,3})?$~');
 
 require_once 'dlx/dlx.classe.php';
 
