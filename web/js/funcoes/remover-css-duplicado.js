@@ -10,7 +10,7 @@ function removerCSSDuplicado() {
         
         // Se o arquivo já existir no array ss, significa que ele está duplicado, então
         // devo remover da página agora.
-        if (ss.indexOf(arquivo_css) < 0) {
+        if (ss.indexOf(arquivo_css) > -1) {
             $link_ss.remove();
 
         // Caso contrário, adiciono ele no array para verificar os próximos.
