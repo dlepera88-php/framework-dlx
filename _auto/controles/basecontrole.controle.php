@@ -163,13 +163,15 @@ abstract class BaseControle {
         Sessao::iniciarSessao($config_autent['nome'], null, true);
 
         $this->adicionarEvento('antes', '*', function () use ($config_autent) {
+            $config_aplicativo = \DLX::$dlx->config('aplicativo');
+
             /*
              * Verificar se a sessão está ativa e, em seguida, tentar restaurar a sessão. Caso não funcione o usuário será
              * redirecionado para a página de login
              */
              if (!Sessao::sessaoAtiva()) {
                 if (!Sessao::iniciarSessao($config_autent['nome'], null, true)) {
-                    \DLX::$dlx->redirecionar($config_autent['url-login']);
+                    \DLX::$dlx->redirecionar(str_replace('%home%', $config_aplicativo['home'], $config_autent['url-login']));
                     die();
                 } // Fim if
             } // Fim if
