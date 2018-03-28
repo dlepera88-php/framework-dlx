@@ -29,9 +29,9 @@
  * SOFTWARE.
  */
 
-namespace Comum\DAO;
+namespace Comum\DTO;
 
-trait DAO {
+trait DTO {
     /**
      * Nome do idioma
      * @var string

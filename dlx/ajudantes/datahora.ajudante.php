@@ -93,10 +93,19 @@ class DataHora {
      * @return string
      */
     public static function subtrairData($data1, $data2, $formato = '%y') {
-        $data1 = date_create(strtotime($data1));
-        $data2 = date_create(strtotime($data2));
+        $data1 = date_create($data1);
+        $data2 = date_create($data2);
         $intervalo = date_diff($data1, $data2);
-
+        
         return $intervalo->format($formato);
     } // Fim do método subtrairData
+
+    /**
+     * Calcular a idade atual de acordo com a data de nascimento.
+     *
+     * @return string
+     */
+    public static function calcularIdade($nasc) {
+        return self::subtrairData('now', self::formatar($nasc, 'Y-m-d'));
+    } // Fim do método calcularIdade
 }
