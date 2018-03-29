@@ -414,4 +414,44 @@ class Imagem {
             } // Fim if
         } // Fim if
     } // Fim do método otimizarParaWeb
+
+// Outros -------------------------------------------------------------------------------------- //
+    /**
+     * Verificar se a imagem está na horizontal.
+     *
+     * @return boolean
+     */
+    public function isHorizontal() {
+        return $this->altura < $this->largura;
+    } // Fim do método isHorizontal
+
+    /**
+     * Verificar se a imagem está na vertical.
+     *
+     * @return boolean
+     */
+    public function isVertical() {
+        return $this->altura > $this->largura;
+    } // Fim do método isVertical
+
+    /**
+     * Verificar se a imagem é quadrada, ou seja, tem altura e largura iguais.
+     *
+     * @return boolean
+     */
+    public function isQuadrada() {
+        return $this->altura === $this->largura;
+    } // Fim do método isQuadrada
+
+    /**
+     * Obtém a orientação da imagem.
+     *
+     * @return string Retorna uma letra representativa da orientação da imagem:
+     * v: vertical
+     * h: horizontal
+     * q: quadrada
+     */
+    public function obterOrientacao() {
+        return $this->isVertical() ? 'v' : ($this->isHorizontal() ? 'h' : 'q');
+    } // Fim do método obterOrientacao
 } // Fim da classe Imagem

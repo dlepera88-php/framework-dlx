@@ -536,7 +536,7 @@ trait RegistroEdicao {
         $sql = \DLX::$dlx->bd->prepare($query['query']);
 
         if (($exec = $sql->execute($dados)) === false) {
-            // echo $query['query']; var_dump($dados);
+            echo $query['query']; var_dump($dados);
             throw new DLXExcecao(sprintf(AjdVisao::traduzirTexto('A instrução SQL de INSERT ou UPDATE não pode ser executada:<br/>%s'), $sql->errorInfo()[2]), 1500);
         } // Fim if
 
