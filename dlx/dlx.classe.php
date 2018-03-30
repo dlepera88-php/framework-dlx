@@ -546,7 +546,7 @@ class DLX {
             } // Fim if
 
             if(function_exists('shell_exec')) {
-                $encoding = $this->config('aplicativo', 'html')['encoding'];
+                $encoding = $this->config('aplicativo', 'encoding');
                 $locales = explode("\n", shell_exec('locale -a'));
                 
                 if (in_array("{$idioma}.{$encoding}", $locales)) {

@@ -34,6 +34,7 @@ namespace DLX\Classes;
 
 use DLX\Ajudantes\Arquivos;
 use DLX\Ajudantes\Sessao;
+use DLX\Ajudantes\Vetores;
 use DLX\Ajudantes\Visao as AjdVisao;
 use DLX\Excecao\DLX as DLXExcecao;
 
@@ -407,7 +408,7 @@ class Visao {
     public function adicionarCSS($css, $ordem = null) {
         if (array_search($css, $this->arquivos_css) === false) {
             $css = AjdVisao::diretorioRelativo() . $css;
-            empty($ordem) ? array_push($this->arquivos_css, $css) : $this->arquivos_css[$ordem] = $css;
+            $this->arquivos_js = Vetores::adicionarValorPos($this->arquivos_css, $css, $ordem);
         } // Fim if
     } // Fim do método adicionarCSS
 
@@ -435,7 +436,7 @@ class Visao {
     public function adicionarJS($js, $ordem = null) {
         if (array_search($js, $this->arquivos_js) === false) {
             $js = AjdVisao::diretorioRelativo() . $js;
-            empty($ordem) ? array_push($this->arquivos_js, $js) : $this->arquivos_js[$ordem] = $js;
+            $this->arquivos_js = Vetores::adicionarValorPos($this->arquivos_js, $js, $ordem);
         } // Fim if
     } // Fim do método adicionarJS
 

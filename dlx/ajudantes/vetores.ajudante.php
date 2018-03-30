@@ -239,4 +239,25 @@ class Vetores {
             return [$chave => $sequencia] + $v;
         }, $vetor);
     } // Fim do método adicionarSequencial
+
+    /**
+     * Adicionar um valor em um vetor, em uma determinada posição.
+     *
+     * @param array $vetor Vetor a ser manipulado.
+     * @param mixed $valor Valor a ser adicionado no vetor em questão.
+     * @param int|null $pos Posição onde o valor deve ser adicionado.
+     * @return void
+     */
+    public static function adicionarValorPos(array $vetor, $valor, $pos = null) {
+        if (is_null($pos)) {
+            array_push($vetor, $valor);
+        } else {
+            $keys = array_keys($vetor);
+            $pos = $pos < 0 ? 0 : $pos;
+
+            in_array($pos, $keys) ? array_splice($vetor, $pos + 1, 0, $valor) : $vetor[$pos] = $valor;
+        } // Fim if ... else
+        
+        return $vetor;
+    } // Fim do método adicionarValorPos
 } // Fim do Ajudante Vetores
