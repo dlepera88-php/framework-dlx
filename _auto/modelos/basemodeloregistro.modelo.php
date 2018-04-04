@@ -70,6 +70,13 @@ abstract class BaseModeloRegistro extends BaseModelo {
     protected $id;
 
     /**
+     * Identificação do idioma desse registro.
+     *
+     * @var string
+     */
+    protected $idioma = 'br';
+
+    /**
      * @var boolean Campo que define se o registro será exibido no site e/ou sistema
      */
     protected $publicar = true;
@@ -152,7 +159,6 @@ abstract class BaseModeloRegistro extends BaseModelo {
      */
     public function getId() {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}id", $this->bd_tabela);
-
         return $this->id;
     }
 
@@ -165,6 +171,17 @@ abstract class BaseModeloRegistro extends BaseModelo {
         $this->id = $id;
     }
 
+    public function getIdioma() {
+        AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}idioma", $this->bd_tabela);
+        return $this->idioma;
+    }
+
+    public function setIdioma($idioma) {
+        AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}idioma", $this->bd_tabela);
+        $this->idioma = filter_var($idioma, FILTER_VALIDATE_REGEXP, [
+            'options' => ['regexp' => '~^[a-z]{2}(?:[_-][A-Za-z]{2})~', 'default' => 'br']
+        ]);
+    }
 
     /**
      * @return boolean
