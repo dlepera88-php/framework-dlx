@@ -179,7 +179,7 @@ abstract class BaseModeloRegistro extends BaseModelo {
     public function setIdioma($idioma) {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}idioma", $this->bd_tabela);
         $this->idioma = filter_var($idioma, FILTER_VALIDATE_REGEXP, [
-            'options' => ['regexp' => '~^[a-z]{2}(?:[_-][A-Za-z]{2})~', 'default' => 'br']
+            'options' => ['regexp' => '~^[a-z]{2}(?:[_-][A-Za-z]{2})?~', 'default' => 'br']
         ]);
     }
 
