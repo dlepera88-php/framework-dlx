@@ -203,8 +203,12 @@ trait RegistroConsulta {
         $this->visao->adicionarParam('info:qtde-total-paginas', $qtde > 0 ? ceil($total_registros / $qtde) : 0);
         $this->visao->adicionarParam('info:qtde-registros-exibidos', count($lista));
         $this->visao->adicionarParam('info:qtde-total-registros', $total_registros);
-        $this->visao->adicionarParam('conf:campos-pk', \DLX::$dlx->bd->identificaPK($this->modelo->getBdTabela(), $this->modelo->getBdPrefixo()));
-        
+
+        // Adicionar os campos definidos como PK da tabela.
+        if (method_exists($this->modelo, 'getBdTabela')) {
+            $this->visao->adicionarParam('conf:campos-pk', \DLX::$dlx->bd->identificaPK($this->modelo->getBdTabela(), $this->modelo->getBdPrefixo()));
+        } // Fim if
+
         # URL base da lista
         $this->visao->adicionarParam('html:url-lista', $this->url_lista);
         $this->gerarOpcoesPadrao($abrir_links_em);

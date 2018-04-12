@@ -184,6 +184,11 @@ class Strings {
     } // Fim do método plural2singular
 
 
+    /**
+     * Retorna o primeiro parâmetro não vazio passado.
+     *
+     * @return mixed
+     */
     public static function naoVazio() {
         $args = func_get_args();
 
@@ -193,4 +198,17 @@ class Strings {
             } //  Fim if
         } // Fim foreach
     } // Fim do método naoVazio
+
+    /**
+     * Formatar uma lista para a leitura humana. Ex:
+     * 'item1,item2,item3' => 'item1, item2 e item3'
+     * 'item1;item2;item3' => 'item1, item2 e item3'
+     *
+     * @param string $lista Lista a ser formatada.
+     * @param string $separador Caractere que está sendo utilizado para separar os itens da lista.
+     * @return string
+     */
+    public static function lista2Humano($lista, $separador = ',') {
+        return preg_replace(["~{$separador}\s*~", '~,\s(\w+)$~u'], [', ', ' e $1'], $lista);
+    } // Fim do método lista2Humano
 } // Fim do Ajudante Strings
