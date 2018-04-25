@@ -364,7 +364,6 @@ abstract class BaseModeloRegistro extends BaseModelo {
      * Obs: É necessário que o registro já tenha sido selecionado.
      *
      * @return array
-     * @throws \DLX\Excecao\DLX
      */
     protected function obterValorPK($padrao = [':id' => 'getID']) {
         $valor_pk = $padrao;
@@ -383,7 +382,7 @@ abstract class BaseModeloRegistro extends BaseModelo {
         } // Fim if
 
         return $valor_pk;
-    } // Fim do método obterPK
+    } // Fim do método obterValorPK
 }
 
 
@@ -553,17 +552,13 @@ trait RegistroEdicao {
         $sql = \DLX::$dlx->bd->prepare($query['query']);
 
         if (($exec = $sql->execute($dados)) === false) {
-            echo $query['query']; var_dump($dados);
             throw new DLXExcecao(sprintf(AjdVisao::traduzirTexto('A instrução SQL de INSERT ou UPDATE não pode ser executada:<br/>%s'), $sql->errorInfo()[2]), 1500);
         } // Fim if
-
-        /* return preg_match('~^(INSERT)~', $query['query'])
-            ? $this->id = \DLX::$dlx->bd->lastInsertID("{$this->getBdPrefixo()}id")
-            : $exec && (bool)$sql->rowCount(); */
-
+        
         return preg_match('~^(INSERT)~', $query['query'])
             ? $this->id = \DLX::$dlx->bd->lastInsertID("{$this->getBdPrefixo()}id")
             : $this->id;
+            // : $this->obterValorPK();
     } // Fim do método salvar
 
 
@@ -608,6 +603,6 @@ trait RegistroEdicao {
             $exec = $this->salvar(true, array_merge($pk, ["{$this->getBdPrefixo()}delete"]));
         } // Fim if
 
-        return !$exec ? false : $this->getID();
+        return !$exec ? false : $this->obterValorPK();
     } // Fim do método excluir
 } // Fim do modelo BaseModeloRegistro

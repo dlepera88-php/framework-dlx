@@ -353,7 +353,8 @@ class Visao {
 
             if ($caminho_template === false || !$procurar) {
                 if (!$opcional) {
-                    throw new DLXExcecao(sprintf($this->traduzir('O template <b>%s</b> não foi localizado ou não é um arquivo de template válido.'), $template), 1404, '-info', 'html');
+                    $this->mostrarMensagemUsuario(sprintf($this->traduzir('O template <b>%s</b> não foi localizado ou não é um arquivo de template válido.'), $template), '-erro', 'html');
+                    // throw new DLXExcecao(sprintf($this->traduzir('O template <b>%s</b> não foi localizado ou não é um arquivo de template válido.'), $template), 1404, '-info', 'html');
                 } else {
                     return;
                 } // Fim
@@ -503,11 +504,9 @@ class Visao {
         };
 
         # Adicionar os arquivos CSS
-        // $this->arquivos_css += array_map($funcao, Arquivos::filtrarPrefixo("{$dir_tema}css/", 'tema', 'css'));
         $this->arquivos_css = array_merge($this->arquivos_css, array_map($funcao, Arquivos::filtrarPrefixo("{$dir_tema}css/", 'tema', 'css')));
 
         # Adicionar os arquivos JS
-        // $this->arquivos_js += array_map($funcao, Arquivos::filtrarPrefixo("{$dir_tema}js/", 'tema-min', 'js'));
         $this->arquivos_js = array_merge($this->arquivos_js, array_map($funcao, Arquivos::filtrarPrefixo("{$dir_tema}js/", 'tema-min', 'js')));
     } // Fim do método carregarArquivosTema
 
@@ -649,4 +648,55 @@ class Visao {
     public function traduzir($texto, $dominio = 'global', $idioma = null) {
         return AjdVisao::traduzirTexto($texto, $dominio, $idioma);
     } // Fim do método traduzir
+
+
+// Interações com o usuário -------------------------------------------------------------------- //
+    /**
+     * Exibir a última mensagem ao usuário
+     *
+     * @param string $mensagem Mensagem a ser exibida
+     * @param string $tipo     Tipo de mensagem
+     * @param string $como     Informa como a mensagem deverá ser exibida:
+     *                         JSON: exibe um objeto JSON com as informações
+     *                         TEXTO: exibe apenas a mensagem em formato de texto puro, sem formatação
+     *                         HTML: exibe a mensagem em formato HTML e formatado de acordo com a classe CSS
+     *                         .mostrar-msg
+     * @param object|array $infos_adicionais Informações adicionais a serem exibidas. Só funciona caso a mensagem
+     * esteja sendo exibida como JSON
+     */
+    public function mostrarMensagemUsuario($mensagem, $tipo = '-erro', $como = 'json', $infos_adicionais = []) {
+        $mensagem = filter_var($mensagem, FILTER_DEFAULT, FILTER_FLAG_EMPTY_STRING_NULL);
+        $tipo = filter_var($tipo, FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL);
+        $como = filter_var($como, FILTER_VALIDATE_REGEXP, [
+            'options' => ['regexp' => '~^(json|html|texto)$~i'],
+            'flags'   => FILTER_NULL_ON_FAILURE
+        ]);
+        
+        switch (strtolower($como)) {
+            case 'json':
+                echo json_encode(array_merge([
+                    'mensagem' => $mensagem,
+                    'tipo'     => $tipo
+                ], (array)$infos_adicionais));
+                break;
+
+            case 'texto':
+                echo $mensagem;
+                break;
+
+            case 'html':
+                $msg_nova = ['tipo' => $tipo, 'texto' => $mensagem];
+
+                if (array_key_exists('html:mensagens-usuario', $this->obterParams())) {
+                    $msgs_atuais = $this->obterParams('html:mensagens-usuario');
+                    $this->adicionarParam('html:mensagens-usuario', $msgs_atuais + $msg_nova);
+                } else {
+                    $this->adicionarParam('html:mensagens-usuario', [$msg_nova]);
+                } // Fim if
+                break;
+            default:
+                echo '<p class="mostrar-msg ', $tipo, '">', $mensagem, '</p>';
+                break;
+        } // Fim switch
+    } // Fim do método mostrarMensagemUsuario
 } // Fim da Classe Visao

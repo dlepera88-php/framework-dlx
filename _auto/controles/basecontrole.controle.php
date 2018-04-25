@@ -110,39 +110,7 @@ abstract class BaseControle {
      * esteja sendo exibida como JSON
      */
     public function mostrarMensagemUsuario($mensagem, $tipo = '-erro', $como = 'json', $infos_adicionais = []) {
-        $mensagem = filter_var($mensagem, FILTER_DEFAULT, FILTER_FLAG_EMPTY_STRING_NULL);
-        $tipo = filter_var($tipo, FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL);
-        $como = filter_var($como, FILTER_VALIDATE_REGEXP, [
-            'options' => ['regexp' => '~^(json|html|texto)$~i'],
-            'flags'   => FILTER_NULL_ON_FAILURE
-        ]);
-        
-        switch (strtolower($como)) {
-            case 'json':
-                echo json_encode(array_merge([
-                    'mensagem' => $mensagem,
-                    'tipo'     => $tipo
-                ], (array)$infos_adicionais));
-                break;
-
-            case 'texto':
-                echo $mensagem;
-                break;
-
-            case 'html':
-                $msg_nova = ['tipo' => $tipo, 'texto' => $mensagem];
-
-                if (array_key_exists('html:mensagens-usuario', $this->visao->obterParams())) {
-                    $msgs_atuais = $this->visao->obterParams('html:mensagens-usuario');
-                    $this->visao->adicionarParam('html:mensagens-usuario', $msgs_atuais + $msg_nova);
-                } else {
-                    $this->visao->adicionarParam('html:mensagens-usuario', [$msg_nova]);
-                } // Fim if
-                break;
-            default:
-                echo '<p class="mostrar-msg ', $tipo, '">', $mensagem, '</p>';
-                break;
-        } // Fim switch
+        $this->visao->mostrarMensagemUsuario($mensagem, $tipo, $como, $infos_adicionais);
     } // Fim do método mostrarMensagemUsuario
 
 
