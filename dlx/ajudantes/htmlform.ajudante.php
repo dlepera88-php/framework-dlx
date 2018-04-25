@@ -216,7 +216,7 @@ class HTMLForm {
 
             // Adicionar o option inicial com valor em branco, para indicar o usuário a selecionar uma das
             // opções
-            $options = array_merge($option_inicial, $options);
+            $options = array_merge((array)$option_inicial, $options);
         } else {
             // Se o array $options estiver vazio, informar ao usuário que nenhuma opção foi adicionada ao
             // select / combobox
