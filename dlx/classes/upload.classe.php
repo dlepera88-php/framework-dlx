@@ -124,9 +124,9 @@ class Upload {
                     yield ['tmp' => $a['tmp_name'][$chv][0], 'nome' => $nome[0], 'erro' => $a['error'][$chv][0]];
                 } // Fim foreach
             } else {
-                is_array($a['name'])
-                    ? yield ['tmp' => $a['tmp_name'][0], 'nome' => $a['name'][0], 'erro' => $a['error'][0]]
-                    : yield ['tmp' => $a['tmp_name'], 'nome' => $a['name'], 'erro' => $a['error']];
+                yield is_array($a['name'])
+                    ? ['tmp' => $a['tmp_name'][0], 'nome' => $a['name'][0], 'erro' => $a['error'][0]]
+                    : ['tmp' => $a['tmp_name'], 'nome' => $a['name'], 'erro' => $a['error']];
             } // Fim if ... else
         } // Fim foreach
     } // Fim do método obterArquivos

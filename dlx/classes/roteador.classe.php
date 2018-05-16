@@ -102,9 +102,9 @@ class Roteador {
         $op = $ev ? preg_grep('~^(aplicativo|modulo|controle|acao|params)$~', array_keys($rota), PREG_GREP_INVERT) : false;
 
         # Verificar se os parâmetros foram configurados na rota
-        if (!preg_match('~/\:[a-z_]+~', $sp) && !$op) {
+        /* if ((is_string($sp) && !preg_match('~/\:[a-z_]+~', $sp)) && !$op) {
             return [];
-        } // Fim if
+        } // Fim if */
 
         # Vetor a ser retornado
         $vp = [];
@@ -113,16 +113,18 @@ class Roteador {
         foreach ($op as $p) {
             $vp[$p] = $rota[$p];
         } // fim foreach
-
-        # Separar apenas os parâmetros da string
-        $sop = preg_grep('~^:~', explode('/', trim($sp, '/')));
-        $url = explode('/', $url);
-
-        foreach ($sop as $c => $p) {
-            if (array_key_exists($c, $url)) {
-                $vp[preg_replace('~^:~', '', $p)] = $url[$c];
-            } // Fim if
-        } // Fim foreach
+        
+        if (is_string($sp)) {
+            # Separar apenas os parâmetros da string
+            $sop = preg_grep('~^:~', explode('/', trim($sp, '/')));
+            $url = explode('/', $url);
+            
+            foreach ($sop as $c => $p) {
+                if (array_key_exists($c, $url)) {
+                    $vp[preg_replace('~^:~', '', $p)] = $url[$c];
+                } // Fim if
+            } // Fim foreach
+        } // Fim if
 
         return $vp;
     } // Fim do método obterParams

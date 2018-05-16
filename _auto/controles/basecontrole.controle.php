@@ -162,7 +162,9 @@ abstract class BaseControle {
      * @return bool
      */
     public function verificarPerm($controle, $acao) {
-        return call_user_func_array(static::$verificar_perm, [$controle, $acao]);
+        return is_callable(static::$verificar_perm)
+            ? call_user_func_array(static::$verificar_perm, [$controle, $acao])
+            : true;
     } // Fim do método verificarPerm
 
 

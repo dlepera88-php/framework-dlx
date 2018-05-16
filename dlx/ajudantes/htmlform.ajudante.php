@@ -156,11 +156,11 @@ class HTMLForm {
         $params['data-mask8'] = MASK_TELEFONE_CELULAR_8;
         $params['data-mask9'] = MASK_TELEFONE_CELULAR_9;
 
-        return static::campoGeral('fone', $nome, $id, $valor, $rotulo, $dica, $params) .
-            '<span class="form-tel9digitos">' .
-            "<input type=\"checkbox\" id=\"check9-{$id}\" data-acao=\"alterar-mask-telefone\" data-acao-param-telefone=\"tel-{$id}\"" . ($nove_digitos ? ' CHECKED' : '') . "/>" .
-            "<label for=\"check9-{$id}\">" . AjdVisao::traduzirTexto('Esse telefone possui o 9º dígito') . '</label>' .
-            '</span>';
+        return static::campoGeral('fone', $nome, $id, $valor, $rotulo, $dica, $params);  //.
+            // '<span class="form-tel9digitos">' .
+            // "<input type=\"checkbox\" id=\"check9-{$id}\" data-acao=\"alterar-mask-telefone\" data-acao-param-telefone=\"tel-{$id}\"" . ($nove_digitos ? ' CHECKED' : '') . "/>" .
+            // "<label for=\"check9-{$id}\">" . AjdVisao::traduzirTexto('Esse telefone possui o 9º dígito') . '</label>' .
+            // '</span>';
     } // Fim do método campoTelefone
 
 
