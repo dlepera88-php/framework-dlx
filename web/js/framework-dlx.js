@@ -40,9 +40,9 @@
 /**
  * Identificar se um determinado possui um determinado evento com um determinado
  * namespace definido
- * @param  {DOM}    objeto  Objeto DOM a ser verificado
+ * @param  {ObjectConstructor}    objeto  Objeto DOM a ser verificado
  * @param  {String} evento  Nome do evento.namespace
- * @return {Int}            Retorna a quantidade de eventos.namespaces presentes
+ * @return {ObjectConstructor}            Retorna a quantidade de eventos.namespaces presentes
  * no objeto
  */
 function temEventoNamespace(objeto, evento) {
@@ -92,7 +92,7 @@ function temEventoNamespace(objeto, evento) {
  * @param  {jQuery}     $dom   Instância jQuery do objeto que receberá esse evento
  * @param  {String}     evento Nome do evento.namespace a ser adicionado
  * @param  {Function}   acao   Função a ser executada durante o evento
- * @return {Void}
+ * @return {VoidFunction}
  */
 function adicionarEvento($dom, evento, acao) {
     $dom.each(function () {
@@ -105,7 +105,7 @@ function adicionarEvento($dom, evento, acao) {
 /**
  * Encontrar uma função no escopo global (Object window)
  * @param {String} namespace Nome com ou sem namespace de uma determinada função
- * @return {Bool|Function} Retornar FALSE se não encontrar a função ou retorna a própria
+ * @return {Boolean|Function} Retornar FALSE se não encontrar a função ou retorna a própria
  * função, caso exista
  */
 function encontrarFuncaoNS(namespace) {
@@ -124,7 +124,7 @@ function encontrarFuncaoNS(namespace) {
  * @param  {String}   mensagem Mensagem a ser exibida, solicitando a confirmação.
  * @param  {Function} acao_sim Função a ser executada ao clicar no botão 'Sim'
  * @param  {Function} acao_nao Função a ser executada ao clicar no botão 'Não'
- * @return {Void}
+ * @return {VoidFunction}
  */
 function solicitarConfirmacao(mensagem, acao_sim, acao_nao) {
     if (typeof $.mostrarMsg === 'undefined') {
@@ -155,7 +155,7 @@ function solicitarConfirmacao(mensagem, acao_sim, acao_nao) {
  * @param  {String} mensagem Mensagem a ser exibida
  * @param  {Object} config   Objeto com as configurações a serem aplicadas no plugin
  * $.mostrarMsg. Disponível apenas caso o plugin $.mostrarMsg seja utilizado.
- * @return {Void}
+ * @return {VoidFunction}
  */
 function mostrarAlerta(mensagem, config) {
     if (typeof $.mostrarMsg === 'undefined') {
@@ -166,3 +166,48 @@ function mostrarAlerta(mensagem, config) {
         $.mostrarMsg('alerta', config_plugin);
     } // Fim if
 } // Fim function mostrarAlerta
+
+// Configuração ajax: mostrar mensagem em cada requisição AJAX via jQuery
+(function ($) {
+    $.fn.getSelector = function () {
+        var $this = $(this);
+        var jqSelector = '';
+
+        if (typeof $this.attr('id') !== 'undefined') {
+            jqSelector += '#' + $this.attr('id');
+        } else if (typeof $this.attr('class') !== 'undefined') {
+            jqSelector += '.' + $this.attr('class').replace(/\s+/g, '.');
+        }
+
+        return jqSelector;
+    };
+
+    $.getSelector = function (dom) {
+        return $(dom).getSelector();
+    };
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, options) {
+            if (!/\.(js|css)$/.test(options.url)) {
+                options.context = document.activeElement;
+                var $origem = $(options.context);
+                var msg = $origem.data('ajax-msg') || 'Carregando, por favor aguarde.';
+
+                $(document.createElement('div'))
+                    .addClass('status-ajax-mensagem')
+                    .attr('data-ajax-origem', $origem.getSelector())
+                    .html(msg)
+                    .appendTo($('#status-ajax'));
+            }
+        }
+    });
+
+    $(document).ajaxComplete(function (event, xhr, options) {
+        if (!/\.(js|css)$/.test(options.url)) {
+            $('#status-ajax [data-ajax-origem="' + $.getSelector(options.context) + '"]')
+                .fadeOut('fast', function () {
+                    $(this).remove();
+                });
+        }
+    });
+})(jQuery);

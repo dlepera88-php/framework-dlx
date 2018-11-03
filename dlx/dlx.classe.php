@@ -261,7 +261,15 @@ class DLX {
         $this->modulo_atual = filter_var($modulo_atual, FILTER_SANITIZE_STRING, FILTER_FLAG_EMPTY_STRING_NULL);
     }
 
-    public function __construct($aplicativo, $ambiente = 'dev', $url = '') {
+    /**
+     * DLX constructor.
+     * @param string $aplicativo
+     * @param string $ambiente
+     * @param string $url
+     * @throws Exception
+     */
+    public function __construct(string $aplicativo, string $ambiente = 'dev', string $url = '')
+    {
         self::$dlx = $this;
 
         $this->setAplicativo($aplicativo);
@@ -273,6 +281,10 @@ class DLX {
 
         # Carregar as configurações
         $this->carregarConfiguracao();
+
+        if ($this->config('aplicativo', 'https')) {
+            $this->redirecionarParaHTTPS();
+        } // Fim if
 
         # Carregar o idioma solicitado
         $this->carregarIdioma($this->config('aplicativo', 'idioma'));
@@ -315,7 +327,7 @@ class DLX {
         } // Fim if
 
         include_once $arquivo;
-        
+
         if (isset($config)) {
             $this->alterarConfiguracao($config);
         } // Fim if
@@ -420,7 +432,7 @@ class DLX {
      */
     protected function conectarBD() {
         $config_bd = $this->config('bd');
-        
+
         if (!empty($config_bd)) {
             $this->bd = new PDODL($config_bd['dsn'], $config_bd['usuario'], $config_bd['senha']);
             $this->bd->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
@@ -450,11 +462,11 @@ class DLX {
                 if (!array_key_exists($rota, $this->rotas[$metodo]) || $sobrepor) {
                     $app_home = $this->config('aplicativo', 'home');
                     $rota = str_replace('%home%', $app_home, $rota);
-                    
+
                     if (!empty($app_home)) {
                         // Adicionar um pulo para posicionar os parâmetros corretamente em relação a
                         // rota que está sendo configurada. Essa ação deve ser feita apenas quando a rota
-                        // define parâmetros via URL. Quando a rota envia parâmetros fixos, através de um 
+                        // define parâmetros via URL. Quando a rota envia parâmetros fixos, através de um
                         // array, não é necessário adicionar o pulo.
                         if (is_array($config) && array_key_exists('params', $config)) {
                             if (is_string($config['params'])) {
@@ -464,7 +476,7 @@ class DLX {
                             $config = "/-{$config}";
                         } // Fim if ... else
                     } // Fim if
-                    
+
                     $this->rotas[$metodo][$rota] = $config;
                 } // Fim if
             } // Fim if
@@ -540,7 +552,7 @@ class DLX {
     public function carregarIdioma($idioma) {
         if (preg_match(EXPREG_IDIOMA, $idioma)) {
             $idioma = str_replace('-', '_', $idioma);
-            
+
             if ($this->config('aplicativo', 'idioma') !== $idioma) {
                 $this->alterarConfiguracao(['aplicativo' => ['idioma' => $idioma]]);
             } // Fim if
@@ -548,14 +560,14 @@ class DLX {
             if(function_exists('shell_exec')) {
                 $encoding = $this->config('aplicativo', 'encoding');
                 $locales = explode("\n", shell_exec('locale -a'));
-                
+
                 if (in_array("{$idioma}.{$encoding}", $locales)) {
                     $idioma = "{$idioma}.{$encoding}";
                 } elseif (in_array("{$idioma}." . str_replace('-', '', strtolower($encoding)), $locales)) {
                     $idioma = "{$idioma}." . str_replace('-', '', strtolower($encoding));
                 } // Fim if ... else
             } // Fim if
-            
+
             // LC_ALL ainda não deve ser utilizado pois o LC_NUMERIC atrapalha o parâmetro value de
             // campos (inputs) decimais
             setlocale(LC_COLLATE, $idioma);
@@ -602,7 +614,22 @@ class DLX {
     } // Fim do método versao
 
 
-// Ferramentas -------------------------------------------------------------- //
+// Ferramentas -------------------------------------------------------------- //]
+    /**
+     * Redirecionar o usuário para a versão HTTPS do site.
+     * @return void
+     */
+    public function redirecionarParaHTTPS(): void
+    {
+        if(!$_SERVER['HTTPS'] || $_SERVER['HTTPS'] === 'off'){
+            $cnf_raiz = preg_replace('~^/~', '', $this->config('aplicativo', 'raiz'));
+            $host_https = "https://{$_SERVER['HTTP_HOST']}/{$cnf_raiz}{$this->getURL()}";
+            header('HTTP/1.1 301 Moved Permanently');
+            header("Location: {$host_https}");
+            exit;
+        } // Fim if
+    } // Fim do método redirecionarParaHTTPS
+
     /**
      * Redirecionar para outra ação
      *

@@ -184,7 +184,8 @@ abstract class BaseModeloRegistro extends BaseModelo {
     }
 
     /**
-     * @return boolean
+     * @return bool
+     * @throws DLXExcecao
      */
     public function isPublicar() {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}publicar", $this->bd_tabela);
@@ -194,7 +195,8 @@ abstract class BaseModeloRegistro extends BaseModelo {
 
 
     /**
-     * @param boolean $publicar
+     * @param $publicar
+     * @throws DLXExcecao
      */
     public function setPublicar($publicar) {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}publicar", $this->bd_tabela);
@@ -203,7 +205,8 @@ abstract class BaseModeloRegistro extends BaseModelo {
 
 
     /**
-     * @return boolean
+     * @return bool
+     * @throws DLXExcecao
      */
     public function isDelete() {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}delete", $this->bd_tabela);
@@ -213,7 +216,8 @@ abstract class BaseModeloRegistro extends BaseModelo {
 
 
     /**
-     * @param boolean $delete
+     * @param $delete
+     * @throws DLXExcecao
      */
     public function setDelete($delete) {
         AjdConstrutorSQL::campoExiste("{$this->getBdPrefixo()}delete", $this->bd_tabela);
